@@ -18,7 +18,14 @@ client = genai.Client(api_key=api_key)
 
 PROMPT = """You are explaining the AI ecosystem to a smart professional who is not an engineer.
 
-Classify the term below into exactly ONE of these categories:
+First, decide whether the input below is a real, recognizable AI/tech term, product,
+company, or concept — even a somewhat obscure one is fine. If it is gibberish,
+random characters, a typo with no plausible match, or unrelated to AI/tech, it is NOT valid.
+
+If it is NOT valid, return ONLY this JSON:
+  {{"is_valid_term": false, "term": "<what they typed>"}}
+
+If it IS valid, classify it into exactly ONE of these categories:
 - Model — the brain itself, trained weights that generate output
 - Concept or technique — a design pattern or method, not a product
 - Framework or library — code developers import to build with
@@ -37,6 +44,7 @@ Use exactly these keys:
   analogy (string, 1 sentence, from everyday life)
   why_it_matters (string, 2 sentences)
   related_terms (list of exactly 3 strings)
+  common_misconception (string)
 
 Term: {term}"""
 
@@ -61,13 +69,17 @@ if st.button("Decode", type="primary") and term.strip():
         st.warning("The model didn't return clean JSON this time. Raw output below.")
         st.code(raw)
     else:
-        st.subheader(data["term"])
-        st.markdown(f"**Category — {data['category']}**")
-        st.write(data["plain_english"])
-        st.info(data["analogy"])
-        st.markdown("**Why it matters**")
-        st.write(data["why_it_matters"])
-        st.markdown("**Related terms:** " + ", ".join(data["related_terms"]))
+        if not data.get("is_valid_term", True):
+            st.error(f"'{data.get('term', term)}' doesn't look like a real AI/tech term. Try something like RAG, MCP, or LangChain.")
+        else:
+            st.subheader(data["term"])
+            st.markdown(f"**Category — {data['category']}**")
+            st.write(data["plain_english"])
+            st.info(data["analogy"])
+            st.markdown("**Why it matters**")
+            st.write(data["why_it_matters"])
+            st.markdown("**Related terms:** " + ", ".join(data["related_terms"]))
+            st.write(data["common_misconception"])
 
     with st.expander("See the raw model output"):
         st.code(raw)

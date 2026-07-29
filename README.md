@@ -24,7 +24,9 @@ Python · Streamlit · Google Gemini API · deployed on Streamlit Community Clou
 
 ## Run it yourself
 pip install -r requirements.txt streamlit run app.py
+
 Add your Gemini key to `.streamlit/secrets.toml`:
+
 GEMINI_API_KEY = "your-key"
 
 ## What I'd do next

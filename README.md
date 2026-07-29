@@ -3,7 +3,7 @@
 Paste an AI buzzword — get back what *category* of thing it actually is,
 explained in plain English.
 
-**Live app:** https://your-app-name.streamlit.app
+**Live app:** https://ai-jargon-decoder.streamlit.app
 
 ## Why I built it
 
